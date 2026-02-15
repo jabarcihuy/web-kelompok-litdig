@@ -29,11 +29,11 @@ const members = ref([
   },
   { 
     id: 4, 
-    name: 'Ranger Pinkyy', 
-    role: 'My Istri', 
-    img: '/ranger4.jpg',
-    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
-    motto: '"Code is poetry, bugs are features."'
+    name: 'Jesi Lindasari', 
+    role: 'Perasa', 
+    img: '/jesi.jpg',
+    bio: 'Lahir di Blora, 24 Januari 2007.',
+    motto: '"Tetap jalani selagi bisa, jika tidak bisa minta bantuan sama Allah."'
   }
 ]);
 
