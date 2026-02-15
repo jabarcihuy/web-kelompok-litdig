@@ -1,0 +1,132 @@
+/* --- 1. IMPORT FONT BARBIE (QUICKSAND) --- */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap');
+
+/* --- 2. SETTING WARNA UTAMA (PALET BARBIE) --- */
+:root {
+  /* Background Halaman (Pink Susu) */
+  --bg-color: #fff0f5; 
+  
+  /* Warna Teks (Abu Tua - JANGAN HITAM PEKAT biar soft) */
+  --text-main: #5d5d5d;
+  --text-muted: #888888;
+  
+  /* Warna Aksen (Hot Pink) */
+  --primary: #ec4899; 
+  --primary-hover: #db2777;
+  
+  /* Warna Kartu & Elemen (Putih Bersih) */
+  --card-bg: #ffffff;
+  --border-color: #fbcfe8; /* Garis pinggir pink muda */
+  
+  /* Bayangan Soft */
+  --shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
+}
+
+/* --- 3. RESET GLOBAL --- */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color) !important; /* Paksa ganti background hitam */
+  color: var(--text-main) !important;
+  font-family: 'Quicksand', sans-serif !important; /* Paksa ganti font */
+}
+
+/* --- 4. PAKSA UBAH KOMPONEN (OVERRIDE) --- */
+
+/* Judul Halaman (H1, H2, H3) */
+h1, h2, h3 {
+  color: var(--primary) !important;
+  font-family: 'Quicksand', sans-serif !important;
+}
+
+/* Garis Bawah Judul (.line) */
+.line {
+  background: var(--primary) !important;
+  height: 5px !important;
+  border-radius: 10px !important;
+}
+
+/* Navbar */
+.navbar {
+  background: rgba(255, 255, 255, 0.8) !important; /* Putih Transparan */
+  backdrop-filter: blur(10px);
+  border-bottom: 2px solid var(--border-color) !important;
+}
+.logo { color: var(--primary) !important; }
+.nav-links a { color: var(--text-main) !important; }
+.nav-links a:hover, .nav-links a.active { color: var(--primary) !important; }
+.menu-toggle { color: var(--primary) !important; }
+
+/* Kartu Anggota & Modal (.card, .modal-card) */
+.card, .modal-card {
+  background: var(--card-bg) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: var(--shadow) !important;
+}
+.card-text h3, .modal-info-col h2 { color: var(--primary) !important; }
+.role-text, .modal-role-tag { color: #f472b6 !important; } /* Role jadi pink muda */
+.bio-text { color: var(--text-main) !important; border-left-color: var(--primary) !important; }
+
+/* Kotak Upload (.upload-zone) */
+.upload-zone {
+  background: white !important;
+  border: 2px dashed var(--primary) !important;
+  color: var(--text-main) !important;
+}
+.upload-zone:hover { background: #fdf2f8 !important; } /* Pink sangat muda pas dihover */
+.upload-placeholder p { color: var(--text-muted) !important; }
+.icon-large { color: var(--primary) !important; }
+
+/* Kotak Login (.login-box) */
+.login-box {
+  background: white !important;
+  border: 2px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  box-shadow: var(--shadow) !important;
+}
+.subtitle, label, .footer-text { color: var(--text-muted) !important; }
+
+/* Input Field (Login & Activity Form) */
+input, textarea, select {
+  background: #fff !important; /* Putih */
+  border: 1px solid #e5e7eb !important;
+  color: #333 !important;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2) !important;
+}
+
+/* List File (.file-item) */
+.file-item {
+  background: white !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+}
+.fname { color: var(--text-main) !important; }
+
+/* --- 5. TOMBOL-TOMBOL (Dibuat Bulat & Cute) --- */
+button, .btn-select, .btn-login, .btn-save, .btn-add {
+  background: var(--primary) !important;
+  color: white !important;
+  border-radius: 50px !important; /* Dibuat bulat banget */
+  border: none !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3) !important;
+}
+button:hover {
+  background: var(--primary-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Tombol Download/Buka (Warna Putih border Pink) */
+.btn-open {
+  background: white !important;
+  color: var(--primary) !important;
+  border: 2px solid var(--primary) !important;
+  border-radius: 50px !important;
+}
+.btn-open:hover {
+  background: var(--primary) !important;
+  color: white !important;
+}
