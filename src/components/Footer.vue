@@ -1,6 +1,6 @@
 <template>
   <footer>
-    <p>© 2026 Kelompok 9 - NEXUS 1.0. Built with Vue.js.</p>
+    <p>© 2026 Kelompok 9 - NEXUS 1.0</p>
   </footer>
 </template>
 <style scoped>

@@ -13,33 +13,25 @@ const members = ref([
   },
   { 
     id: 2, 
-    name: 'Ranger Ireng', 
-    role: 'Wakil Ketua', 
-    img: '/ranger2.jpg',
-    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
-    motto: '"Code is poetry, bugs are features."'
+    name: 'Ulfa Misdatul Nikmah', 
+    role: 'Gigih', 
+    img: '/ulfa.jpg',
+    bio: 'Lahir di Kendal, 20 Desember 2007.',
+    motto: '"Don\'t say you can\'t before you try!"'
   },
   { 
     id: 3, 
-    name: 'Ranger Miaww', 
+    name: 'Sabrina Salwa Fadila', 
     role: 'Satwa Liar', 
-    img: '/ranger3.jpg',
-    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
-    motto: '"Code is poetry, bugs are features."'
+    img: '/salwa.jpg',
+    bio: 'Lahir di Tegal, 28 Oktober 2006.',
+    motto: '"Kita bisa karna terbiasa"'
   },
   { 
     id: 4, 
     name: 'Ranger Pinkyy', 
     role: 'My Istri', 
     img: '/ranger4.jpg',
-    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
-    motto: '"Code is poetry, bugs are features."'
-  },
-  { 
-    id: 5, 
-    name: 'Ranger Ijo', 
-    role: 'Peranakan Buto ijo', 
-    img: '/ranger5.jpg',
     bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
     motto: '"Code is poetry, bugs are features."'
   }
@@ -63,7 +55,7 @@ const closeModal = () => selectedMember.value = null;
       <div class="section-header" data-aos="fade-down">
         <h2>Anggota Kelompok</h2>
         <div class="line"></div>
-        <p class="sub-header">Tim solid di balik project Nexus 5.0</p>
+        <p class="sub-header">Tim solid di balik project Nexus 1.0</p>
       </div>
 
       <div class="team-layout">
