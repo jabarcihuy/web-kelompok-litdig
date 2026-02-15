@@ -5,38 +5,43 @@ import { ref, computed } from 'vue';
 const members = ref([
   { 
     id: 1, 
-    name: 'Ranger Kuning', 
-    role: 'Ketua', 
-    img: '/ranger1.jpg',
-    bio: '"Bisanya cuman ngatur doang, mentang mentang jabatannya ketua."'
+    name: 'Aan Rifai', 
+    role: 'Fineshyt', 
+    img: '/aan.jpg',
+    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
+    motto: '"Code is poetry, bugs are features."'
   },
   { 
     id: 2, 
     name: 'Ranger Ireng', 
     role: 'Wakil Ketua', 
     img: '/ranger2.jpg',
-    bio: '"Ranger ireng asli ngawi, selatan rumah pak amba belakang rumah denny caknan."'
+    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
+    motto: '"Code is poetry, bugs are features."'
   },
   { 
     id: 3, 
     name: 'Ranger Miaww', 
     role: 'Satwa Liar', 
     img: '/ranger3.jpg',
-    bio: '"Kang maling teri, giliran dikasihani berak sembarangan."'
+    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
+    motto: '"Code is poetry, bugs are features."'
   },
   { 
     id: 4, 
     name: 'Ranger Pinkyy', 
     role: 'My Istri', 
     img: '/ranger4.jpg',
-    bio: '"My istri gweh yang selalu cantik, dan imupp."'
+    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
+    motto: '"Code is poetry, bugs are features."'
   },
   { 
     id: 5, 
     name: 'Ranger Ijo', 
     role: 'Peranakan Buto ijo', 
     img: '/ranger5.jpg',
-    bio: '"Tukang maling anak kecil (pedofil)."'
+    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
+    motto: '"Code is poetry, bugs are features."'
   }
 ]);
 
@@ -58,11 +63,10 @@ const closeModal = () => selectedMember.value = null;
       <div class="section-header" data-aos="fade-down">
         <h2>Anggota Kelompok</h2>
         <div class="line"></div>
-        <p class="sub-header">Tim solid di balik project Nexus 1.0</p>
+        <p class="sub-header">Tim solid di balik project Nexus 5.0</p>
       </div>
 
       <div class="team-layout">
-        
         <div class="row-center" data-aos="fade-up">
           <div v-for="m in topRowMembers" :key="m.id" class="card" @click="openModal(m)">
             <div class="card-image">
@@ -74,7 +78,6 @@ const closeModal = () => selectedMember.value = null;
             </div>
           </div>
         </div>
-
         <div class="row-center" data-aos="fade-up" data-aos-delay="100">
           <div v-for="m in bottomRowMembers" :key="m.id" class="card" @click="openModal(m)">
             <div class="card-image">
@@ -86,7 +89,6 @@ const closeModal = () => selectedMember.value = null;
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -104,9 +106,14 @@ const closeModal = () => selectedMember.value = null;
             <h2>{{ selectedMember.name }}</h2>
             <div class="separator"></div>
             
-            <p class="bio-text">
+            <p class="bio-real">
               {{ selectedMember.bio }}
             </p>
+
+            <div class="motto-box">
+              <p class="motto-text">{{ selectedMember.motto }}</p>
+            </div>
+
           </div>
         </div>
       </div>
@@ -201,12 +208,36 @@ h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom:
   margin: 0;
 }
 
-/* RESPONSIVE HP */
+.bio-real {
+  font-size: 0.95rem;
+  color: #4a4a4a; /* Abu gelap biar jelas dibaca */
+  line-height: 1.6;
+  font-style: normal; /* TEGAK */
+  margin-bottom: 25px; /* Jarak ke motto */
+}
+
+/* 2. STYLE MOTTO (MIRING & ADA GARIS) */
+.motto-box {
+  border-left: 3px solid #ec4899; /* Garis Pink di kiri */
+  padding-left: 15px;
+  background: #fff0f5; /* Background pink pudar sekali */
+  padding: 10px 15px;
+  border-radius: 0 8px 8px 0;
+}
+
+.motto-text {
+  font-size: 0.9rem;
+  color: #888;
+  font-style: italic; /* MIRING */
+  margin: 0;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .modal-card { flex-direction: column; max-height: 85vh; overflow-y: auto; }
   .modal-img-col { width: 100%; height: 250px; }
   .modal-info-col { width: 100%; padding: 25px; }
   .row-center { gap: 15px; }
-  .card { width: 45%; } /* Di HP jadi 2 kolom */
+  .card { width: 45%; } 
 }
 </style>

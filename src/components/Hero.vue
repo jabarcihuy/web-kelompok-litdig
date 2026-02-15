@@ -2,9 +2,9 @@
   <header class="hero">
     <div class="hero-content" data-aos="fade-up">
       <span class="tagline">KELOMPOK 9 - LITERASI DIGITAL</span>
-      <h1 class="main-title">SOCIETY 5.0 & <br> <span class="gradient-text">HUMANITY</span></h1>
+      <h1 class="main-title">WISE USE OF <br> <span class="gradient-text">THE INTERNET</span></h1>
       <p class="description">
-        Mengupas tuntas hubungan manusia dengan teknologi di era Revolusi Industri 4.0 menuju Society 5.0.
+        Level Up Your Mind, Not Just Your Feed
       </p>
       <div class="scroll-indicator">
         <span>Scroll Down</span>
