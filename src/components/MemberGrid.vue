@@ -58,7 +58,7 @@ const closeModal = () => selectedMember.value = null;
       <div class="section-header" data-aos="fade-down">
         <h2>Anggota Kelompok</h2>
         <div class="line"></div>
-        <p class="sub-header">Tim solid di balik project Nexus 5.0</p>
+        <p class="sub-header">Tim solid di balik project Nexus 1.0</p>
       </div>
 
       <div class="team-layout">

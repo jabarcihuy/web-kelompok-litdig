@@ -30,7 +30,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 <template>
   <nav class="navbar" :class="{ 'scrolled': isScrolled }">
     <div class="nav-container">
-      <div class="logo" @click="navTo('home')">NEXUS <span class="highlight">5.0</span></div>
+      <div class="logo" @click="navTo('home')">NEXUS <span class="highlight">1.0</span></div>
       
       <button class="menu-toggle" @click="toggleMenu">
         <i class='bx' :class="isMenuOpen ? 'bx-x' : 'bx-menu'"></i>
