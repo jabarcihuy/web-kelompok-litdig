@@ -84,7 +84,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.5rem; }
 
 @media (max-width: 768px) {
-  .nav-links { position: fixed; top: 70px; left: 0; width: 100%; background: #050507; flex-direction: column; padding: 30px; transform: translateY(-150%); transition: 0.4s; z-index: 99; }
-  .nav-links.show { transform: translateY(0); } .menu-toggle { display: block; }
+  .nav-links { position: fixed; top: 70px; left: 0; width: 84%; background: #feeeff; flex-direction: column; padding: 30px; transform: translateY(-150%); transition: 0.4s; z-index: 99; }
+  .nav-links.show { transform: translateY(0); } .menu-toggle { display: flex; }
 }
 </style>
