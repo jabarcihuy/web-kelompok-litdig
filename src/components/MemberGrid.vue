@@ -22,7 +22,7 @@ const members = ref([
   { 
     id: 3, 
     name: 'Sabrina Salwa Fadila', 
-    role: 'Satwa Liar', 
+    role: 'Ceria', 
     img: '/salwa.jpg',
     bio: 'Lahir di Tegal, 28 Oktober 2006.',
     motto: '"Kita bisa karna terbiasa"'
