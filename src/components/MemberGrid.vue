@@ -8,8 +8,8 @@ const members = ref([
     name: 'Aan Rifai', 
     role: 'Fineshyt', 
     img: '/aan.jpg',
-    bio: 'Spesialis dalam Vue.js dan CSS. Bertugas mengubah desain UI menjadi kode website yang responsif dan interaktif.',
-    motto: '"Code is poetry, bugs are features."'
+    bio: 'Lahir di Wonosobo, 17 Juli 2006.',
+    motto: '"Urip iku urup."'
   },
   { 
     id: 2, 
