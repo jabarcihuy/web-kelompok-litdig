@@ -1,7 +1,7 @@
 <template>
   <header class="hero">
     <div class="hero-content" data-aos="fade-up">
-      <span class="tagline">KELOMPOK 1 - LITERASI DIGITAL</span>
+      <span class="tagline">KELOMPOK 9 - LITERASI DIGITAL</span>
       <h1 class="main-title">SOCIETY 5.0 & <br> <span class="gradient-text">HUMANITY</span></h1>
       <p class="description">
         Mengupas tuntas hubungan manusia dengan teknologi di era Revolusi Industri 4.0 menuju Society 5.0.
