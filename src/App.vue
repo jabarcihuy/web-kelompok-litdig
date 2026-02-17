@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, provide } from 'vue';
 // Import Firebase Auth
 import { auth } from './firebase'; 
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -19,8 +19,36 @@ import RuangLiterasi from './components/RuangLiterasi.vue'; // Halaman Artikel
 const currentPage = ref('home');
 const isAdmin = ref(false); // <--- State untuk menyimpan status Login
 
+// --- THEME LOGIC (Dark/Light) ---
+const isDarkMode = ref(false);
+
+const toggleTheme = () => {
+  isDarkMode.value = !isDarkMode.value;
+  updateTheme();
+};
+
+const updateTheme = () => {
+  if (isDarkMode.value) {
+    document.body.classList.add('dark-mode');
+    localStorage.setItem('theme', 'dark');
+  } else {
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('theme', 'light');
+  }
+};
+
 // Cek Status Login Saat Web Dibuka (Realtime)
 onMounted(() => {
+  // Reset scroll page (jaga-jaga kalau stuck dari modal sebelumnya)
+  document.body.style.overflow = '';
+
+  // Check LocalStorage for Theme (Default: Pink/Light if empty)
+  const savedTheme = localStorage.getItem('theme');
+  if (savedTheme === 'dark') {
+    isDarkMode.value = true;
+    updateTheme();
+  }
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       isAdmin.value = true; // Jika ada user login, set Admin true
@@ -28,6 +56,11 @@ onMounted(() => {
       isAdmin.value = false; // Jika tidak, set false
     }
   });
+});
+
+provide('theme', {
+  isDarkMode,
+  toggleTheme
 });
 
 // Fungsi Pindah Halaman

@@ -43,6 +43,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   if (unsubscribe) unsubscribe();
+  document.body.style.overflow = ''; // Reset scroll saat pindah halaman
 });
 
 // Actions

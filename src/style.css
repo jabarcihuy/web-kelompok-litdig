@@ -4,37 +4,99 @@
 /* --- 2. SETTING WARNA UTAMA (PALET BARBIE) --- */
 :root {
   /* Background Halaman (Pink Susu) */
-  --bg-color: #fff0f5; 
-  
+  --bg-color: #fff0f5;
+
   /* Warna Teks (Abu Tua - JANGAN HITAM PEKAT biar soft) */
   --text-main: #5d5d5d;
   --text-muted: #888888;
-  
+
   /* Warna Aksen (Hot Pink) */
-  --primary: #ec4899; 
+  --primary: #ec4899;
   --primary-hover: #db2777;
-  
+
   /* Warna Kartu & Elemen (Putih Bersih) */
   --card-bg: #ffffff;
-  --border-color: #fbcfe8; /* Garis pinggir pink muda */
-  
+  --border-color: #fbcfe8;
+  /* Garis pinggir pink muda */
+
   /* Bayangan Soft */
   --shadow: 0 10px 30px rgba(236, 72, 153, 0.15);
+}
+
+/* --- DARK MODE OVERRIDE --- */
+body.dark-mode {
+  /* Background Gelap (Bukan Hitam Pekat) */
+  --bg-color: #121212;
+
+  /* Teks Terang */
+  --text-main: #e0e0e0;
+  --text-muted: #a0a0a0;
+
+  /* Warna Aksen (Pink Lebih Terang/Neon) */
+  --primary: #f472b6;
+  --primary-hover: #db2777;
+
+  /* Kartu & Elemen Gelap */
+  --card-bg: #1e1e1e;
+  --border-color: #333333;
+
+  /* Bayangan Lebih Deep */
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+/* Override Komponen di Dark Mode */
+body.dark-mode .navbar {
+  background: rgba(30, 30, 30, 0.8) !important;
+  /* Gelap Transparan */
+}
+
+body.dark-mode .card,
+body.dark-mode .modal-card,
+body.dark-mode .login-box,
+body.dark-mode .file-item {
+  background: var(--card-bg) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background: #2d2d2d !important;
+  color: #fff !important;
+  border-color: var(--border-color) !important;
+}
+
+body.dark-mode .upload-zone {
+  background: #2d2d2d !important;
+  border-color: var(--primary) !important;
+  color: var(--text-main) !important;
+}
+
+body.dark-mode .subtitle,
+body.dark-mode label,
+body.dark-mode .footer-text,
+body.dark-mode .upload-placeholder p {
+  color: var(--text-muted) !important;
 }
 
 /* --- 3. RESET GLOBAL --- */
 body {
   margin: 0;
   padding: 0;
-  background-color: var(--bg-color) !important; /* Paksa ganti background hitam */
+  background-color: var(--bg-color) !important;
+  /* Paksa ganti background hitam */
   color: var(--text-main) !important;
-  font-family: 'Quicksand', sans-serif !important; /* Paksa ganti font */
+  font-family: 'Quicksand', sans-serif !important;
+  /* Paksa ganti font */
 }
 
 /* --- 4. PAKSA UBAH KOMPONEN (OVERRIDE) --- */
 
 /* Judul Halaman (H1, H2, H3) */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   color: var(--primary) !important;
   font-family: 'Quicksand', sans-serif !important;
 }
@@ -48,24 +110,52 @@ h1, h2, h3 {
 
 /* Navbar */
 .navbar {
-  background: rgba(255, 255, 255, 0.8) !important; /* Putih Transparan */
+  background: rgba(255, 255, 255, 0.8) !important;
+  /* Putih Transparan */
   backdrop-filter: blur(10px);
   border-bottom: 2px solid var(--border-color) !important;
 }
-.logo { color: var(--primary) !important; }
-.nav-links a { color: var(--text-main) !important; }
-.nav-links a:hover, .nav-links a.active { color: var(--primary) !important; }
-.menu-toggle { color: var(--primary) !important; }
+
+.logo {
+  color: var(--primary) !important;
+}
+
+.nav-links a {
+  color: var(--text-main) !important;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--primary) !important;
+}
+
+.menu-toggle {
+  color: var(--primary) !important;
+}
 
 /* Kartu Anggota & Modal (.card, .modal-card) */
-.card, .modal-card {
+.card,
+.modal-card {
   background: var(--card-bg) !important;
   border: 2px solid var(--border-color) !important;
   box-shadow: var(--shadow) !important;
 }
-.card-text h3, .modal-info-col h2 { color: var(--primary) !important; }
-.role-text, .modal-role-tag { color: #8b5cf6 !important; } /* Role jadi purple - cocok dengan pink */
-.bio-text { color: var(--text-main) !important; border-left-color: var(--primary) !important; }
+
+.card-text h3,
+.modal-info-col h2 {
+  color: var(--primary) !important;
+}
+
+.role-text,
+.modal-role-tag {
+  color: #8b5cf6 !important;
+}
+
+/* Role jadi purple - cocok dengan pink */
+.bio-text {
+  color: var(--text-main) !important;
+  border-left-color: var(--primary) !important;
+}
 
 /* Kotak Upload (.upload-zone) */
 .upload-zone {
@@ -73,9 +163,19 @@ h1, h2, h3 {
   border: 2px dashed var(--primary) !important;
   color: var(--text-main) !important;
 }
-.upload-zone:hover { background: #fdf2f8 !important; } /* Pink sangat muda pas dihover */
-.upload-placeholder p { color: var(--text-muted) !important; }
-.icon-large { color: var(--primary) !important; }
+
+.upload-zone:hover {
+  background: #fdf2f8 !important;
+}
+
+/* Pink sangat muda pas dihover */
+.upload-placeholder p {
+  color: var(--text-muted) !important;
+}
+
+.icon-large {
+  color: var(--primary) !important;
+}
 
 /* Kotak Login (.login-box) */
 .login-box {
@@ -84,15 +184,26 @@ h1, h2, h3 {
   color: var(--text-main) !important;
   box-shadow: var(--shadow) !important;
 }
-.subtitle, label, .footer-text { color: var(--text-muted) !important; }
+
+.subtitle,
+label,
+.footer-text {
+  color: var(--text-muted) !important;
+}
 
 /* Input Field (Login & Activity Form) */
-input, textarea, select {
-  background: #fff !important; /* Putih */
+input,
+textarea,
+select {
+  background: #fff !important;
+  /* Putih */
   border: 1px solid #e5e7eb !important;
   color: #333 !important;
 }
-input:focus, textarea:focus, select:focus {
+
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.2) !important;
 }
@@ -103,17 +214,26 @@ input:focus, textarea:focus, select:focus {
   border: 1px solid var(--border-color) !important;
   color: var(--text-main) !important;
 }
-.fname { color: var(--text-main) !important; }
+
+.fname {
+  color: var(--text-main) !important;
+}
 
 /* --- 5. TOMBOL-TOMBOL (Dibuat Bulat & Cute) --- */
-button, .btn-select, .btn-login, .btn-save, .btn-add {
+button,
+.btn-select,
+.btn-login,
+.btn-save,
+.btn-add {
   background: var(--primary) !important;
   color: white !important;
-  border-radius: 50px !important; /* Dibuat bulat banget */
+  border-radius: 50px !important;
+  /* Dibuat bulat banget */
   border: none !important;
   font-weight: 700 !important;
   box-shadow: 0 4px 10px rgba(236, 72, 153, 0.3) !important;
 }
+
 button:hover {
   background: var(--primary-hover) !important;
   transform: translateY(-2px) !important;
@@ -126,6 +246,7 @@ button:hover {
   border: 2px solid var(--primary) !important;
   border-radius: 50px !important;
 }
+
 .btn-open:hover {
   background: var(--primary) !important;
   color: white !important;

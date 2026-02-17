@@ -1,9 +1,11 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, inject } from 'vue';
 
 // Menerima data 'isAdmin' dari App.vue
 const props = defineProps(['currentPage', 'isAdmin']);
 const emit = defineEmits(['changePage', 'logout']);
+
+const { isDarkMode, toggleTheme } = inject('theme');
 
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
@@ -63,6 +65,13 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
           </a>
         </li>
 
+        <!-- Theme Toggle -->
+        <li>
+          <button class="btn-theme" @click="toggleTheme" :title="isDarkMode ? 'Mode Terang' : 'Mode Gelap'">
+            <i :class="isDarkMode ? 'bx bx-sun' : 'bx bx-moon'"></i>
+          </button>
+        </li>
+
         <li v-if="!isAdmin">
           <a href="#" class="btn-login" @click.prevent="navTo('login')">
             <i class='bx bx-user'></i> Login Admin
@@ -99,6 +108,28 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 .btn-logout:hover { background: #dc2626; }
 
 .menu-toggle { display: none; background: none; border: none; color: white; font-size: 1.5rem; }
+
+.btn-theme {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: transparent !important;
+  color: #6366f1 !important;
+  border: 2px solid #6366f1 !important;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0 !important;
+}
+
+.btn-theme:hover {
+  background: #6366f1 !important;
+  color: white !important;
+  transform: rotate(30deg);
+}
 
 @media (max-width: 768px) {
   .nav-links { position: fixed; top: 70px; left: 0; width: 84%; background: #feeeff; flex-direction: column; padding: 30px; transform: translateY(-150%); transition: 0.4s; z-index: 99; }
