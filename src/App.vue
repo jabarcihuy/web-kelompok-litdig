@@ -12,6 +12,7 @@ import ActivityLog from './components/ActivityLog.vue';
 import UploadSection from './components/UploadSection.vue';
 import Login from './components/Login.vue'; // <--- JANGAN LUPA INI
 import Footer from './components/Footer.vue';
+import MusicPlayer from './components/MusicPlayer.vue'; // Komponen Music Player
 
 // State Halaman
 const currentPage = ref('home');
@@ -77,6 +78,9 @@ const handleLogout = async () => {
     </main>
 
     <Footer />
+    
+    <!-- Music Player (Floating di kiri bawah) -->
+    <MusicPlayer />
   </div>
 </template>
 
