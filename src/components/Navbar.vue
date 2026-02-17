@@ -42,6 +42,14 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
         <li v-if="currentPage === 'home'"><a href="#anggota">Anggota</a></li>
         
         <li><a href="#" :class="{ active: currentPage === 'aktivitas' }" @click.prevent="navTo('aktivitas')">Aktivitas</a></li>
+        
+        <!-- Nexus Chat Bot Link -->
+        <li>
+          <a href="https://nexus-ai-v1.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-chatbot">
+            <i class='bx bx-bot'></i>
+          </a>
+        </li>
+        
         <li>
           <a href="#" class="btn-upload" :class="{ active: currentPage === 'upload' }" @click.prevent="navTo('upload')">
              <i class='bx bx-cloud-upload'></i> Repository
@@ -76,6 +84,8 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 
 /* Tombol Khusus */
 .btn-upload { background: #6366f1; color: #fff !important; padding: 8px 20px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.btn-chatbot { background: linear-gradient(135deg, #8b5cf6, #6366f1); color: #fff !important; padding: 8px 20px; border-radius: 30px; font-weight: 600; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+.btn-chatbot:hover { background: linear-gradient(135deg, #7c3aed, #4f46e5); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4); }
 .btn-login { border: 1px solid #6366f1; color: #6366f1 !important; padding: 8px 20px; border-radius: 30px; display: flex; align-items: center; gap: 5px; }
 .btn-login:hover { background: #6366f1; color: white !important; }
 .btn-logout { background: #ef4444; color: white !important; padding: 8px 20px; border-radius: 30px; display: flex; align-items: center; gap: 5px; }
