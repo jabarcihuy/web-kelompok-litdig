@@ -43,6 +43,13 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
         
         <li><a href="#" :class="{ active: currentPage === 'aktivitas' }" @click.prevent="navTo('aktivitas')">Aktivitas</a></li>
         
+        <!-- Ruang Literasi Link -->
+        <li>
+          <a href="#" :class="{ active: currentPage === 'literasi' }" @click.prevent="navTo('literasi')">
+             Ruang Literasi
+          </a>
+        </li>
+        
         <!-- Nexus Chat Bot Link -->
         <li>
           <a href="https://nexus-ai-v1.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-chatbot">

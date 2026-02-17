@@ -13,6 +13,7 @@ import UploadSection from './components/UploadSection.vue';
 import Login from './components/Login.vue'; // <--- JANGAN LUPA INI
 import Footer from './components/Footer.vue';
 import MusicPlayer from './components/MusicPlayer.vue'; // Komponen Music Player
+import RuangLiterasi from './components/RuangLiterasi.vue'; // Halaman Artikel
 
 // State Halaman
 const currentPage = ref('home');
@@ -70,6 +71,10 @@ const handleLogout = async () => {
 
       <div v-else-if="currentPage === 'upload'">
         <UploadSection :isAdmin="isAdmin" />
+      </div>
+
+      <div v-else-if="currentPage === 'literasi'">
+        <RuangLiterasi :isAdmin="isAdmin" />
       </div>
       
       <div v-else-if="currentPage === 'login'">
