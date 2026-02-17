@@ -37,11 +37,7 @@ const members = ref([
   }
 ]);
 
-// LOGIKA LAYOUT: Pisah jadi 2 grup
-// Grup Atas: 2 Orang Pertama
-const topRowMembers = computed(() => members.value.slice(0, 2));
-// Grup Bawah: 3 Orang Sisanya
-const bottomRowMembers = computed(() => members.value.slice(2));
+// Layout Grid - tidak perlu split manual lagi
 
 // MODAL LOGIC
 const selectedMember = ref(null);
@@ -58,27 +54,15 @@ const closeModal = () => selectedMember.value = null;
         <p class="sub-header">Tim solid di balik project Nexus 1.0</p>
       </div>
 
-      <div class="team-layout">
-        <div class="row-center" data-aos="fade-up">
-          <div v-for="m in topRowMembers" :key="m.id" class="card" @click="openModal(m)">
-            <div class="card-image">
-              <img :src="m.img" :alt="m.name" loading="lazy" />
-            </div>
-            <div class="card-text">
-              <h3>{{ m.name }}</h3>
-              <div class="role-text">{{ m.role }}</div>
-            </div>
+      <!-- Grid Layout: 4 columns (desktop), 2 columns (mobile) -->
+      <div class="team-grid" data-aos="fade-up">
+        <div v-for="m in members" :key="m.id" class="card" @click="openModal(m)">
+          <div class="card-image">
+            <img :src="m.img" :alt="m.name" loading="lazy" />
           </div>
-        </div>
-        <div class="row-center" data-aos="fade-up" data-aos-delay="100">
-          <div v-for="m in bottomRowMembers" :key="m.id" class="card" @click="openModal(m)">
-            <div class="card-image">
-              <img :src="m.img" :alt="m.name" loading="lazy" />
-            </div>
-            <div class="card-text">
-              <h3>{{ m.name }}</h3>
-              <div class="role-text">{{ m.role }}</div>
-            </div>
+          <div class="card-text">
+            <h3>{{ m.name }}</h3>
+            <div class="role-text">{{ m.role }}</div>
           </div>
         </div>
       </div>
@@ -121,18 +105,12 @@ h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom:
 .line { width: 60px; height: 4px; background: #6366f1; margin: 0 auto 15px; border-radius: 2px; }
 .sub-header { color: #a1a1aa; }
 
-/* --- LAYOUT BARU (FLEXBOX CENTER) --- */
-.team-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 20px; /* Jarak antar baris */
-}
-
-.row-center {
-  display: flex;
-  justify-content: center; /* KUNCI: Membuat kartu selalu di tengah */
-  gap: 20px; /* Jarak antar kartu */
-  flex-wrap: wrap;
+/* --- LAYOUT BARU (CSS GRID) --- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 kolom di desktop */
+  gap: 20px;
+  justify-items: center;
 }
 
 /* KARTU MEMBER */
@@ -229,7 +207,12 @@ h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; margin-bottom:
   .modal-card { flex-direction: column; max-height: 85vh; overflow-y: auto; }
   .modal-img-col { width: 100%; height: 250px; }
   .modal-info-col { width: 100%; padding: 25px; }
-  .row-center { gap: 15px; }
-  .card { width: 45%; } 
+  
+  /* Grid jadi 2 kolom di mobile */
+  .team-grid { 
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  .card { width: 100%; max-width: 200px; }
 }
 </style>

@@ -64,7 +64,7 @@ h1, h2, h3 {
   box-shadow: var(--shadow) !important;
 }
 .card-text h3, .modal-info-col h2 { color: var(--primary) !important; }
-.role-text, .modal-role-tag { color: #f472b6 !important; } /* Role jadi pink muda */
+.role-text, .modal-role-tag { color: #8b5cf6 !important; } /* Role jadi purple - cocok dengan pink */
 .bio-text { color: var(--text-main) !important; border-left-color: var(--primary) !important; }
 
 /* Kotak Upload (.upload-zone) */
