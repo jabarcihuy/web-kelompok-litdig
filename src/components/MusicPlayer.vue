@@ -8,12 +8,12 @@ const isExpanded = ref(false); // State untuk expand/collapse controls
 
 // Playlist dengan 6 lagu
 const playlist = ref([
-  { title: 'Background Sound', src: '/sound.mp3' },
+  { title: 'Dari Planet Lain', src: '/sound.mp3' },
   { title: '33x', src: '/33x.mp3' },
-  { title: 'Kota Ini', src: '/kotaini.mp3' },
+  { title: 'Kota Ini Tak Sama Tanpamu', src: '/kotaini.mp3' },
   { title: 'Nina', src: '/nina.mp3' },
-  { title: 'Spontan', src: '/spontan.mp3' },
-  { title: 'The Man', src: '/theman.mp3' }
+  { title: 'Spontan (tanpa) Uhuy', src: '/spontan.mp3' },
+  { title: 'The Man can\'t be moved', src: '/theman.mp3' }
 ]);
 
 // Current track yang sedang dimainkan
