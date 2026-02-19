@@ -17,6 +17,49 @@ const isEditing = ref(false);
 const isLoading = ref(false);
 const isUploading = ref(false); // State untuk loading upload
 
+// --- NOTIFICATION SYSTEM ---
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success'); // success, error, warning
+
+const triggerToast = (msg, type = 'success') => {
+  toastMessage.value = msg;
+  toastType.value = type;
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 3000);
+};
+
+// --- DELETE MODAL SYSTEM ---
+const showDeleteModal = ref(false);
+const articleToDelete = ref(null);
+
+const confirmDelete = (id) => {
+  articleToDelete.value = id;
+  showDeleteModal.value = true;
+};
+
+const cancelDelete = () => {
+  showDeleteModal.value = false;
+  articleToDelete.value = null;
+};
+
+const executeDelete = async () => {
+  if (!articleToDelete.value) return;
+  
+  try {
+    await deleteDoc(doc(db, 'articles', articleToDelete.value));
+    triggerToast('Artikel berhasil dihapus.', 'success');
+  } catch (error) {
+    console.error("Error deleting article:", error);
+    triggerToast('Gagal menghapus artikel.', 'error');
+  } finally {
+    showDeleteModal.value = false;
+    articleToDelete.value = null;
+  }
+};
+
 // Form State
 const formData = ref({
   id: '',
@@ -64,13 +107,13 @@ const handleFileUpload = async (event) => {
 
   // Validasi tipe file
   if (!file.type.startsWith('image/')) {
-    alert('Harap pilih file gambar!');
+    triggerToast('Harap pilih file gambar!', 'warning');
     return;
   }
 
   // Validasi ukuran (max 5MB)
   if (file.size > 5 * 1024 * 1024) {
-    alert('Ukuran gambar maksimal 5MB!');
+    triggerToast('Ukuran gambar maksimal 5MB!', 'warning');
     return;
   }
 
@@ -94,10 +137,11 @@ const handleFileUpload = async (event) => {
     const result = await response.json();
     formData.value.image = result.secure_url; // Set URL gambar dari Cloudinary
     console.log('Upload success:', result.secure_url);
+    triggerToast('Gambar berhasil diupload!', 'success');
     
   } catch (error) {
     console.error('Error uploading to Cloudinary:', error);
-    alert('Gagal mengupload gambar. Pastikan Cloud Name & Preset benar.');
+    triggerToast('Gagal mengupload gambar. Pastikan Cloud Name & Preset benar.', 'error');
   } finally {
     isUploading.value = false;
   }
@@ -129,7 +173,7 @@ const closeFormModal = () => {
 
 const saveArticle = async () => {
   if (!formData.value.title || !formData.value.content) {
-    alert('Judul dan Konten wajib diisi!');
+    triggerToast('Judul dan Konten wajib diisi!', 'warning');
     return;
   }
 
@@ -147,7 +191,7 @@ const saveArticle = async () => {
         content: formData.value.content,
         updatedAt: serverTimestamp()
       });
-      alert('Artikel berhasil diperbarui!');
+      triggerToast('Artikel berhasil diperbarui!', 'success');
     } else {
       // Create new
       await addDoc(collection(db, 'articles'), {
@@ -159,26 +203,14 @@ const saveArticle = async () => {
         content: formData.value.content,
         createdAt: serverTimestamp()
       });
-      alert('Artikel berhasil ditambahkan!');
+      triggerToast('Artikel berhasil ditambahkan!', 'success');
     }
     closeFormModal();
   } catch (error) {
     console.error("Error saving article:", error);
-    alert('Terjadi kesalahan saat menyimpan artikel.');
+    triggerToast('Terjadi kesalahan saat menyimpan artikel.', 'error');
   } finally {
     isLoading.value = false;
-  }
-};
-
-const deleteArticle = async (id) => {
-  if (confirm('Yakin ingin menghapus artikel ini? Tindakan ini tidak bisa dibatalkan.')) {
-    try {
-      await deleteDoc(doc(db, 'articles', id));
-      alert('Artikel berhasil dihapus.');
-    } catch (error) {
-      console.error("Error deleting article:", error);
-      alert('Gagal menghapus artikel.');
-    }
   }
 };
 
@@ -192,6 +224,31 @@ const truncateText = (text, length) => {
 
 <template>
   <div class="literasi-container">
+    
+    <!-- TOAST NOTIFICATION -->
+    <transition name="toast">
+      <div v-if="showToast" class="toast-notification" :class="toastType">
+        <i v-if="toastType === 'success'" class='bx bx-check-circle'></i>
+        <i v-if="toastType === 'error'" class='bx bx-x-circle'></i>
+        <i v-if="toastType === 'warning'" class='bx bx-error'></i>
+        <span>{{ toastMessage }}</span>
+      </div>
+    </transition>
+
+    <!-- DELETE MODAL -->
+    <transition name="modal">
+      <div v-if="showDeleteModal" class="modal-overlay">
+        <div class="modal-content delete-modal" style="text-align: center;">
+          <h3 style="margin-bottom: 10px; color: #ef4444;">Hapus Artikel?</h3>
+          <p style="margin-bottom: 20px; color: #F5D3F3;">Apakah Anda yakin ingin menghapus artikel ini? Tindakan ini tidak dapat dibatalkan.</p>
+          <div style="display: flex; justify-content: center; gap: 10px;">
+            <button @click="cancelDelete" style="background: #3f3f46; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Batal</button>
+            <button @click="executeDelete" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Hapus</button>
+          </div>
+        </div>
+      </div>
+    </transition>
+    
     <div class="header-section" data-aos="fade-down">
       <h1>Ruang Literasi</h1>
       <div class="line"></div>
@@ -239,7 +296,7 @@ const truncateText = (text, length) => {
               <button class="btn-edit" @click="openEditModal(article)" title="Edit">
                 <i class='bx bx-edit'></i>
               </button>
-              <button class="btn-delete" @click="deleteArticle(article.id)" title="Hapus">
+              <button class="btn-delete" @click="confirmDelete(article.id)" title="Hapus">
                 <i class='bx bx-trash'></i>
               </button>
             </div>
@@ -564,6 +621,14 @@ const truncateText = (text, length) => {
   box-shadow: 0 25px 50px rgba(0,0,0,0.5);
 }
 
+.delete-modal {
+  max-width: 400px !important;
+  background: #18181b !important;
+  border: 1px solid #3f3f46;
+  padding: 30px;
+  height: auto;
+}
+
 .form-modal {
   max-width: 600px;
   padding: 0;
@@ -800,4 +865,46 @@ input, textarea {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* Toast and Modal Extra Styles */
+.toast-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: 500;
+  z-index: 3000; /* Higher than modal */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  min-width: 300px;
+}
+
+.toast-notification.success { background: rgba(16, 185, 129, 0.9); border: 1px solid #10b981; }
+.toast-notification.error { background: rgba(239, 68, 68, 0.9); border: 1px solid #ef4444; }
+.toast-notification.warning { background: rgba(245, 158, 11, 0.9); border: 1px solid #f59e0b; }
+
+.toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(-20px); }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2500; /* Higher than normal modal */
+  backdrop-filter: blur(5px);
+}
+
+.modal-enter-active, .modal-leave-active { transition: opacity 0.3s; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
 </style>

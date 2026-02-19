@@ -10,18 +10,44 @@ const { isDarkMode, toggleTheme } = inject('theme');
 const isMenuOpen = ref(false);
 const isScrolled = ref(false);
 
+// --- NOTIFICATION SYSTEM ---
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success'); // success, error, warning
+
+const triggerToast = (msg, type = 'success') => {
+  toastMessage.value = msg;
+  toastType.value = type;
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 3000);
+};
+
+// --- LOGOUT MODAL SYSTEM ---
+const showLogoutModal = ref(false);
+
+const confirmLogout = () => {
+  showLogoutModal.value = true;
+  isMenuOpen.value = false; // Close menu if open
+};
+
+const cancelLogout = () => {
+  showLogoutModal.value = false;
+};
+
+const executeLogout = () => {
+  showLogoutModal.value = false;
+  emit('logout'); // Emit logout event to App.vue
+  triggerToast('Berhasil Logout!', 'success');
+};
+
 const toggleMenu = () => isMenuOpen.value = !isMenuOpen.value;
 
 const navTo = (page) => {
   emit('changePage', page);
   isMenuOpen.value = false;
   window.scrollTo(0, 0);
-};
-
-// Fungsi Logout (Memanggil event ke App.vue)
-const logout = () => {
-  emit('logout');
-  isMenuOpen.value = false;
 };
 
 const handleScroll = () => isScrolled.value = window.scrollY > 50;
@@ -31,6 +57,31 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
 
 <template>
   <nav class="navbar" :class="{ 'scrolled': isScrolled }">
+    
+    <!-- TOAST NOTIFICATION -->
+    <transition name="toast">
+      <div v-if="showToast" class="toast-notification" :class="toastType">
+        <i v-if="toastType === 'success'" class='bx bx-check-circle'></i>
+        <i v-if="toastType === 'error'" class='bx bx-x-circle'></i>
+        <i v-if="toastType === 'warning'" class='bx bx-error'></i>
+        <span>{{ toastMessage }}</span>
+      </div>
+    </transition>
+
+    <!-- LOGOUT CONFIRMATION MODAL -->
+    <transition name="modal">
+      <div v-if="showLogoutModal" class="modal-overlay">
+        <div class="modal-content logout-modal" style="text-align: center;">
+          <h3 style="margin-bottom: 10px; color: #ef4444;">Konfirmasi Logout</h3>
+          <p style="margin-bottom: 20px; color: #e4e4e7;">Apakah Anda yakin ingin keluar dari halaman admin?</p>
+          <div style="display: flex; justify-content: center; gap: 10px;">
+            <button @click="cancelLogout" style="background: #3f3f46; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Batal</button>
+            <button @click="executeLogout" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Ya, Keluar</button>
+          </div>
+        </div>
+      </div>
+    </transition>
+
     <div class="nav-container">
       <div class="logo" @click="navTo('home')">NEXUS <span class="highlight">1.0</span></div>
       
@@ -61,7 +112,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
         
         <li>
           <a href="#" class="btn-upload" :class="{ active: currentPage === 'upload' }" @click.prevent="navTo('upload')">
-             <i class='bx bx-cloud-upload'></i> Repository
+             <i class='bx bx-cloud-upload'></i> Upload Tugas
           </a>
         </li>
 
@@ -78,7 +129,7 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
           </a>
         </li>
         <li v-else>
-          <a href="#" class="btn-logout" @click.prevent="logout">
+          <a href="#" class="btn-logout" @click.prevent="confirmLogout">
             <i class='bx bx-log-out'></i> Logout
           </a>
         </li>
@@ -135,4 +186,67 @@ onUnmounted(() => window.removeEventListener('scroll', handleScroll));
   .nav-links { position: fixed; top: 70px; left: 0; width: 84%; background: #feeeff; flex-direction: column; padding: 30px; transform: translateY(-150%); transition: 0.4s; z-index: 99; }
   .nav-links.show { transform: translateY(0); } .menu-toggle { display: flex; }
 }
+
+/* Toast Notification Styles */
+.toast-notification {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: 500;
+  z-index: 2000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  min-width: 300px;
+}
+
+.toast-notification.success { background: rgba(16, 185, 129, 0.9); border: 1px solid #10b981; }
+.toast-notification.error { background: rgba(239, 68, 68, 0.9); border: 1px solid #ef4444; }
+.toast-notification.warning { background: rgba(245, 158, 11, 0.9); border: 1px solid #f59e0b; }
+
+.toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(-20px); }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: #18181b;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid #3f3f46;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.logout-modal {
+  border: 1px solid #ef4444;
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-enter-active, .modal-leave-active { transition: opacity 0.3s; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
 </style>

@@ -11,6 +11,49 @@ const showForm = ref(false);
 const newActivity = ref({ title: '', date: '', desc: '', status: 'On Progress' });
 const isLoading = ref(true);
 
+// --- NOTIFICATION SYSTEM ---
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success'); // success, error, warning
+
+const triggerToast = (msg, type = 'success') => {
+  toastMessage.value = msg;
+  toastType.value = type;
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 3000);
+};
+
+// --- DELETE MODAL SYSTEM ---
+const showDeleteModal = ref(false);
+const activityToDelete = ref(null);
+
+const confirmDelete = (id) => {
+  activityToDelete.value = id;
+  showDeleteModal.value = true;
+};
+
+const cancelDelete = () => {
+  showDeleteModal.value = false;
+  activityToDelete.value = null;
+};
+
+const executeDelete = async () => {
+  if (!activityToDelete.value) return;
+  
+  try {
+    await deleteDoc(doc(db, "activities", activityToDelete.value));
+    triggerToast("Aktivitas berhasil dihapus!", "success");
+  } catch (error) {
+    console.error(error);
+    triggerToast("Gagal menghapus aktivitas: " + error.message, "error");
+  } finally {
+    showDeleteModal.value = false;
+    activityToDelete.value = null;
+  }
+};
+
 // 1. REALTIME LISTENER (Baca Data - Semua orang boleh baca)
 onMounted(() => {
   const q = query(collection(db, "activities"), orderBy("createdAt", "desc"));
@@ -26,7 +69,7 @@ onMounted(() => {
 // 2. TAMBAH DATA (Create - Hanya Admin via UI)
 const addActivity = async () => {
   if (!newActivity.value.title || !newActivity.value.desc) {
-    alert("Judul dan Deskripsi wajib diisi!");
+    triggerToast("Judul dan Deskripsi wajib diisi!", "warning");
     return;
   }
 
@@ -42,15 +85,9 @@ const addActivity = async () => {
     // Reset Form
     newActivity.value = { title: '', date: '', desc: '', status: 'On Progress' };
     showForm.value = false;
+    triggerToast("Aktivitas berhasil ditambahkan!", "success");
   } catch (e) {
-    alert("Gagal: " + e.message);
-  }
-};
-
-// 3. HAPUS DATA (Delete - Hanya Admin via UI)
-const deleteActivity = async (id) => {
-  if (confirm("Hapus catatan aktivitas ini?")) {
-    await deleteDoc(doc(db, "activities", id));
+    triggerToast("Gagal: " + e.message, "error");
   }
 };
 
@@ -63,6 +100,31 @@ const formatDate = (dateString) => {
 <template>
   <div class="page-content">
     <div class="container-narrow">
+      
+      <!-- TOAST NOTIFICATION -->
+      <transition name="toast">
+        <div v-if="showToast" class="toast-notification" :class="toastType">
+          <i v-if="toastType === 'success'" class='bx bx-check-circle'></i>
+          <i v-if="toastType === 'error'" class='bx bx-x-circle'></i>
+          <i v-if="toastType === 'warning'" class='bx bx-error'></i>
+          <span>{{ toastMessage }}</span>
+        </div>
+      </transition>
+
+      <!-- DELETE MODAL -->
+      <transition name="modal">
+        <div v-if="showDeleteModal" class="modal-overlay">
+          <div class="modal-content" style="text-align: center;">
+            <h3 style="margin-bottom: 10px; color: #ef4444;">Hapus Aktivitas?</h3>
+            <p style="margin-bottom: 20px; color: #d4d4d8;">Apakah Anda yakin ingin menghapus catatan aktivitas ini? Tindakan ini tidak dapat dibatalkan.</p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+              <button @click="cancelDelete" style="background: #3f3f46; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Batal</button>
+              <button @click="executeDelete" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Hapus</button>
+            </div>
+          </div>
+        </div>
+      </transition>
+
       <div class="section-header" data-aos="fade-down">
         <h2>Log Aktivitas Kelompok</h2>
         <div class="line"></div>
@@ -129,7 +191,7 @@ const formatDate = (dateString) => {
                 }">{{ act.status }}</span>
               </h3>
               
-              <button v-if="isAdmin" class="btn-del" @click="deleteActivity(act.id)">
+              <button v-if="isAdmin" class="btn-del" @click="confirmDelete(act.id)">
                 <i class='bx bx-trash'></i>
               </button>
             </div>
@@ -145,7 +207,7 @@ const formatDate = (dateString) => {
 <style scoped>
 /* Layout Dasar */
 .page-content { padding-top: 100px; padding-bottom: 50px; min-height: 100vh; color: white; }
-.container-narrow { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+.container-narrow { max-width: 800px; margin: 0 auto; padding: 0 20px; position: relative; }
 .section-header { text-align: center; margin-bottom: 40px; }
 h2 { font-family: 'Space Grotesk', sans-serif; font-size: 2.5rem; }
 .line { width: 60px; height: 4px; background: #6366f1; margin: 10px auto; border-radius: 2px; }
@@ -232,4 +294,63 @@ input:focus, select:focus, textarea:focus { outline: none; border-color: #6366f1
 @media (max-width: 768px) {
   .form-row { flex-direction: column; gap: 0; }
 }
+
+/* Toast Notification Styles */
+.toast-notification {
+  position: fixed;
+  top: 100px; /* Adjust based on navbar height */
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  backdrop-filter: blur(10px);
+  min-width: 300px;
+}
+
+.toast-notification.success { background: rgba(16, 185, 129, 0.9); border: 1px solid #10b981; }
+.toast-notification.error { background: rgba(239, 68, 68, 0.9); border: 1px solid #ef4444; }
+.toast-notification.warning { background: rgba(245, 158, 11, 0.9); border: 1px solid #f59e0b; }
+
+.toast-enter-active, .toast-leave-active { transition: all 0.3s ease; }
+.toast-enter-from, .toast-leave-to { opacity: 0; transform: translateY(-20px); }
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: #18181b;
+  padding: 30px;
+  border-radius: 15px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid #3f3f46;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalPop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.modal-enter-active, .modal-leave-active { transition: opacity 0.3s; }
+.modal-enter-from, .modal-leave-to { opacity: 0; }
 </style>
