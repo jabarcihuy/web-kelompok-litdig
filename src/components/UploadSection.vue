@@ -12,9 +12,10 @@ const isUploading = ref(false);
 const uploadText = ref('Mengupload...');
 const uploadedFiles = ref([]);
 
-// State untuk Nama dan NIM
+// State untuk Nama, NIM, dan Tugas
 const uploaderName = ref('');
 const uploaderNim = ref('');
+const taskName = ref('');
 
 // --- NOTIFICATION SYSTEM ---
 const showToast = ref(false);
@@ -42,6 +43,54 @@ const confirmDelete = (id) => {
 const cancelDelete = () => {
   showDeleteModal.value = false;
   fileToDelete.value = null;
+};
+
+// --- TEXT SUBMISSION SYSTEM ---
+const submissionType = ref('file'); // 'file' or 'text'
+const textContent = ref('');
+const showTextModal = ref(false);
+const activeTextFile = ref(null);
+
+const viewText = (file) => {
+    activeTextFile.value = file;
+    showTextModal.value = true;
+};
+const closeTextModal = () => {
+    showTextModal.value = false;
+    activeTextFile.value = null;
+};
+
+const handleTextSubmit = async () => {
+    if (!uploaderName.value || !uploaderNim.value || !taskName.value || !textContent.value) {
+        triggerToast("Mohon isi semua form dengan lengkap!", "warning");
+        return;
+    }
+    
+    isUploading.value = true;
+    uploadText.value = "Menyimpan Tugas...";
+
+    try {
+        await addDoc(collection(db, "uploads"), {
+          name: taskName.value + " (Teks)",
+          size: '-',
+          type: 'text',
+          content: textContent.value,
+          uploadedAt: Date.now(),
+          uploaderName: uploaderName.value,
+          uploaderNim: uploaderNim.value,
+          taskName: taskName.value
+        });
+        triggerToast("Tugas berhasil dikirim!", "success");
+        uploaderName.value = '';
+        uploaderNim.value = '';
+        taskName.value = '';
+        textContent.value = '';
+    } catch (error) {
+        console.error(error);
+        triggerToast("Gagal mengirim tugas: " + error.message, "error");
+    } finally {
+        isUploading.value = false;
+    }
 };
 
 const executeDelete = async () => {
@@ -76,8 +125,8 @@ onMounted(() => {
 });
 
 const triggerFileInput = () => {
-    if (!uploaderName.value || !uploaderNim.value) {
-        triggerToast("Mohon isi Nama dan NIM terlebih dahulu!", "warning");
+    if (!uploaderName.value || !uploaderNim.value || !taskName.value) {
+        triggerToast("Mohon isi Nama, NIM, dan Nama Tugas terlebih dahulu!", "warning");
         return;
     }
     fileInput.value.click();
@@ -88,8 +137,8 @@ const handleFileUpload = async (event) => {
   const file = event.target.files[0];
   if (!file) return;
 
-  if (!uploaderName.value || !uploaderNim.value) {
-      triggerToast("Mohon isi Nama dan NIM terlebih dahulu!", "warning");
+  if (!uploaderName.value || !uploaderNim.value || !taskName.value) {
+      triggerToast("Mohon isi Nama, NIM, dan Nama Tugas terlebih dahulu!", "warning");
       event.target.value = null; // Reset input file
       return;
   }
@@ -118,7 +167,8 @@ const handleFileUpload = async (event) => {
       url: res.data.secure_url, // Link Aman Cloudinary
       uploadedAt: Date.now(),
       uploaderName: uploaderName.value, // Simpan Nama
-      uploaderNim: uploaderNim.value    // Simpan NIM
+      uploaderNim: uploaderNim.value,   // Simpan NIM
+      taskName: taskName.value          // Simpan Nama Tugas
     });
 
     triggerToast("Upload Berhasil!", "success");
@@ -126,6 +176,7 @@ const handleFileUpload = async (event) => {
     // Reset form setelah upload berhasil
     uploaderName.value = '';
     uploaderNim.value = '';
+    taskName.value = '';
 
   } catch (error) {
     console.error(error);
@@ -148,6 +199,29 @@ const handleFileUpload = async (event) => {
           <i v-if="toastType === 'error'" class='bx bx-x-circle'></i>
           <i v-if="toastType === 'warning'" class='bx bx-error'></i>
           <span>{{ toastMessage }}</span>
+        </div>
+      </transition>
+
+      <!-- TEXT VIEWER MODAL -->
+      <transition name="modal">
+        <div v-if="showTextModal" class="modal-overlay" @click.self="closeTextModal">
+          <div class="modal-content text-modal" style="text-align: left; max-width: 600px; width: 90%;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                <div>
+                    <h3 style="margin-bottom: 5px; color: white;">{{ activeTextFile?.taskName }}</h3>
+                    <div style="font-size: 0.9rem; color: #a1a1aa;">
+                        Oleh: {{ activeTextFile?.uploaderName }} ({{ activeTextFile?.uploaderNim }})
+                    </div>
+                </div>
+                <button @click="closeTextModal" style="background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 1.5rem;">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; color: #d4d4d8; max-height: 50vh; overflow-y: auto; white-space: pre-wrap; font-family: inherit; line-height: 1.6;">{{ activeTextFile?.content }}</div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
+              <button @click="closeTextModal" style="background: #3f3f46; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Tutup</button>
+            </div>
+          </div>
         </div>
       </transition>
 
@@ -184,9 +258,24 @@ const handleFileUpload = async (event) => {
               placeholder="NIM" 
               class="input-field"
             />
+            <input 
+              type="text" 
+              v-model="taskName" 
+              placeholder="Nama Tugas (Contoh: Tugas 1 MTK)" 
+              class="input-field"
+            />
         </div>
 
-        <div class="upload-zone" :class="{ 'uploading': isUploading }">
+        <div class="type-toggle">
+            <button @click="submissionType = 'file'" :class="{ active: submissionType === 'file' }">
+                <i class='bx bx-upload'></i> Upload File
+            </button>
+            <button @click="submissionType = 'text'" :class="{ active: submissionType === 'text' }">
+                <i class='bx bx-text'></i> Tulis Teks
+            </button>
+        </div>
+
+        <div v-if="submissionType === 'file'" class="upload-zone" :class="{ 'uploading': isUploading }">
           <input type="file" ref="fileInput" @change="handleFileUpload" style="display: none" />
           
           <div v-if="!isUploading" @click="triggerFileInput" style="cursor: pointer;">
@@ -200,6 +289,23 @@ const handleFileUpload = async (event) => {
             <h3>{{ uploadText }}</h3>
           </div>
         </div>
+
+        <div v-if="submissionType === 'text'" class="text-zone">
+            <textarea 
+                v-model="textContent" 
+                placeholder="Tuliskan jawaban atau isi tugas Anda di sini secara langsung..." 
+                class="text-input-area"
+            ></textarea>
+            
+            <button v-if="!isUploading" @click="handleTextSubmit" class="submit-btn text-submit-btn">
+                <i class='bx bx-send'></i> Kirim Tugas Teks
+            </button>
+            
+            <div v-else style="text-align: center; padding: 20px;">
+                <i class='bx bx-loader-alt bx-spin' style="font-size: 2rem; color: #6366f1;"></i>
+                <h3 style="margin-top: 10px;">{{ uploadText }}</h3>
+            </div>
+        </div>
       </div>
 
       <div v-else style="text-align: center; padding: 40px; border: 1px dashed #444; border-radius: 20px; margin-bottom: 40px; color: #a1a1aa;">
@@ -212,21 +318,30 @@ const handleFileUpload = async (event) => {
         <ul style="list-style: none; padding: 0;">
           <li v-for="file in uploadedFiles" :key="file.id" style="background: rgba(255,255,255,0.05); padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center;">
             <div style="display: flex; align-items: center; gap: 10px;">
-              <i class='bx bxs-file' style="font-size: 1.5rem; color: #a1a1aa;"></i>
+              <i v-if="file.type === 'text'" class='bx bx-text' style="font-size: 1.8rem; color: #10b981;"></i>
+              <i v-else class='bx bxs-file' style="font-size: 1.8rem; color: #a1a1aa;"></i>
               <div>
                 <div style="font-weight: 500;">{{ file.name }}</div>
                 <div style="font-size: 0.8rem; color: #a1a1aa;">
                     <span v-if="file.uploaderName || file.uploaderNim">
                         Oleh: {{ file.uploaderName }} ({{ file.uploaderNim }}) | 
                     </span>
+                    <span v-if="file.taskName" style="color: #6366f1; font-weight: 600;">
+                        Tugas: {{ file.taskName }} | 
+                    </span>
                     {{ file.size }}
                 </div>
               </div>
             </div>
 
-            <div style="display: flex; gap: 10px;">
-              <a :href="file.url" target="_blank" style="background: #27272a; color: #6366f1; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-weight: 600;">Buka</a>
-              <button v-if="isAdmin" @click="confirmDelete(file.id)" style="background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <a v-if="file.type !== 'text' && file.url" :href="file.url" target="_blank" style="background: #27272a; color: #6366f1; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-weight: 600; display: flex; align-items: center; gap: 5px;">
+                <i class='bx bx-link-external'></i> Buka
+              </a>
+              <button v-if="file.type === 'text'" @click="viewText(file)" style="background: #27272a; color: #10b981; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px;">
+                <i class='bx bx-book-open'></i> Baca
+              </button>
+              <button v-if="isAdmin" @click="confirmDelete(file.id)" style="background: #ef4444; color: white; border: none; padding: 8px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;">
                 <i class='bx bx-trash'></i>
               </button>
             </div>
@@ -353,5 +468,101 @@ const handleFileUpload = async (event) => {
   h2 {
     font-size: 1.8rem !important;
   }
+  
+  .type-toggle {
+    flex-direction: column;
+  }
+}
+
+.type-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.type-toggle button {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid #444;
+    color: #a1a1aa;
+    padding: 12px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.type-toggle button:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.type-toggle button.active {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
+    color: white;
+}
+
+.text-zone {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px dashed #444;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    transition: 0.3s;
+}
+
+.text-zone:hover {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.02);
+}
+
+.text-input-area {
+    width: 100%;
+    min-height: 250px;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid #3f3f46;
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    resize: vertical;
+    outline: none;
+    margin-bottom: 20px;
+    line-height: 1.5;
+    box-sizing: border-box; /* Mencegah padding membuat elemen melebar melampaui 100% */
+}
+
+.text-input-area:focus {
+    border-color: #6366f1;
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.submit-btn {
+    width: 100%;
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.submit-btn:hover {
+    background: #4f46e5;
+    transform: translateY(-2px);
 }
 </style>
