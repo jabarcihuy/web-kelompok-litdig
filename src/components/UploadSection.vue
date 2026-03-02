@@ -60,6 +60,15 @@ const closeTextModal = () => {
     activeTextFile.value = null;
 };
 
+// Fungsi untuk mendeteksi link dan mengubahnya menjadi tag <a>
+const parseLinks = (text) => {
+    if (!text) return '';
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return text.replace(urlRegex, (url) => {
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer" style="color: #6366f1; text-decoration: underline;">${url}</a>`;
+    });
+};
+
 const handleTextSubmit = async () => {
     if (!uploaderName.value || !uploaderNim.value || !taskName.value || !textContent.value) {
         triggerToast("Mohon isi semua form dengan lengkap!", "warning");
@@ -217,7 +226,10 @@ const handleFileUpload = async (event) => {
                     <i class='bx bx-x'></i>
                 </button>
             </div>
-            <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; color: #d4d4d8; max-height: 50vh; overflow-y: auto; white-space: pre-wrap; font-family: inherit; line-height: 1.6;">{{ activeTextFile?.content }}</div>
+            <div 
+                v-html="parseLinks(activeTextFile?.content)"
+                style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 12px; color: #d4d4d8; max-height: 50vh; overflow-y: auto; white-space: pre-wrap; font-family: inherit; line-height: 1.6; word-break: break-word;"
+            ></div>
             <div style="display: flex; justify-content: flex-end; margin-top: 20px;">
               <button @click="closeTextModal" style="background: #3f3f46; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 500;">Tutup</button>
             </div>
